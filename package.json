@@ -1,0 +1,19 @@
+{
+  "name": "hall-meal-mern",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Smart Hall Meal Management System with React and MongoDB",
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,yellow \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "seed": "npm run seed --prefix server",
+    "start": "npm run start --prefix server",
+    "test:money": "npm run test:money --prefix server",
+    "test:images": "npm run test:images --prefix server"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
