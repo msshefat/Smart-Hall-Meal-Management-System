@@ -1,0 +1,25 @@
+{
+  "name": "hall-meal-server",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HallMeal API with Express and MongoDB",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/seed.js",
+    "test:money": "node src/money.test.js",
+    "test:images": "node src/images.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-session": "^1.18.2",
+    "mongoose": "^8.19.1",
+    "multer": "^2.4.0"
+  }
+}
