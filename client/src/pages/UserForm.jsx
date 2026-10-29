@@ -96,7 +96,7 @@ export default function UserForm() {
         <label>{editing ? 'New password (optional)' : <>Password <Star /></>}
           <input className="form-control" type="text" value={form.password} onChange={set('password')} minLength={editing ? undefined : 6} required={!editing} autoComplete="new-password" />
         </label>
-        {!editing ? <label>Opening balance for a student (TK )<input className="form-control" type="number" min="0" step="0.01" value={form.balance} onChange={set('balance')} /></label> : null}
+        {!editing ? <label>Opening balance for a student (৳)<input className="form-control" type="number" min="0" step="0.01" value={form.balance} onChange={set('balance')} /></label> : null}
         <div className="page-actions">
           <button className="btn btn-primary" type="submit">{editing ? 'Save changes' : 'Create account'}</button>
           <Link className="btn btn-quiet" to="/app/users">Cancel</Link>

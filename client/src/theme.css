@@ -134,6 +134,45 @@ code {
 .brand-on-dark .brand-mark { background: #fff; }
 
 .public-wrap { max-width: 1180px; margin: 0 auto; padding: 1.2rem 1.2rem 3rem; }
+.landing-page {
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 1.1rem 1.2rem 3rem;
+  background:
+    linear-gradient(180deg, rgba(239, 236, 230, 0.2) 0%, rgba(239, 236, 230, 0.16) 48%, rgba(239, 236, 230, 0.62) 100%),
+    url('/hall-grounds.jpg') center 38% / cover no-repeat fixed;
+}
+.landing-page .public-nav,
+.landing-page .hero,
+.landing-page .feature-grid,
+.landing-page .public-foot {
+  width: min(1180px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+.landing-page .public-nav {
+  background: rgba(255, 252, 248, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 24px rgba(22, 28, 24, 0.1);
+}
+.landing-page .hero-copy {
+  background: rgba(255, 252, 248, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  padding: 1.45rem 1.4rem 1.35rem;
+  box-shadow: 0 12px 32px rgba(22, 28, 24, 0.14);
+}
+.landing-page .public-foot {
+  background: rgba(255, 252, 248, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-top: 1rem;
+}
 .public-nav { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; flex-wrap: wrap; padding: 0.4rem 0 1rem; }
 .public-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
 .hero {

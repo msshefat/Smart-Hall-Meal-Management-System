@@ -55,7 +55,7 @@ export default function Orders() {
                 >
                   <span className="meal-name">{meal.label}</span>
                   <span className="meal-menu">{meal.items}</span>
-                  <span className="meal-lock">{meal.taken ? 'Already served at the mess' : data.orderingBlocked && !meal.on ? 'Past −TK 500' : meal.lockLabel}</span>
+                  <span className="meal-lock">{meal.taken ? 'Already served at the mess' : data.orderingBlocked && !meal.on ? 'Past −৳500' : meal.lockLabel}</span>
                   <span className="meal-state">{meal.taken ? 'Taken' : meal.locked ? 'Locked' : data.orderingBlocked && !meal.on ? 'Balance limit' : meal.on ? 'On your list' : 'Off'}</span>
                 </button>
               ))}

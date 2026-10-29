@@ -23,11 +23,11 @@ function reportCsv(data) {
     ['Breakfast', data.totals.breakfast],
     ['Lunch', data.totals.lunch],
     ['Dinner', data.totals.dinner],
-    ['Bazar TK ', plainMoney(data.totals.costLabel)],
-    ['Charged TK ', plainMoney(data.totals.postedLabel)],
-    ['Left over TK ', plainMoney(data.totals.undistributedLabel)],
+    ['Bazar BDT', plainMoney(data.totals.costLabel)],
+    ['Charged BDT', plainMoney(data.totals.postedLabel)],
+    ['Left over BDT', plainMoney(data.totals.undistributedLabel)],
     [],
-    ['Date', 'Meal', 'Students', 'Bazar TK ', 'Rate TK ', 'Charged TK ', 'Left over TK ']
+    ['Date', 'Meal', 'Students', 'Bazar BDT', 'Rate BDT', 'Charged BDT', 'Left over BDT']
   ]
   data.days.forEach((day) => {
     day.meals.forEach((meal) => {

@@ -90,7 +90,7 @@ export default function Balances() {
           </label>
         </div>
         <div className="pair">
-          <label>Amount (TK ) <Star /><input className="form-control" inputMode="decimal" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} required /></label>
+          <label>Amount (৳) <Star /><input className="form-control" inputMode="decimal" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} required /></label>
           <label>Note<input className="form-control" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} /></label>
         </div>
         <button className="btn btn-primary" type="submit">Record</button>

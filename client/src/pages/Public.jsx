@@ -11,7 +11,7 @@ export function Landing() {
     api.get('/api/board').then(setBoard).catch(() => setMissing(true))
   }, [])
   return (
-    <div className="public-wrap" id="content">
+    <div className="public-wrap landing-page" id="content">
       <header className="public-nav">
         <a className="brand brand-light" href="/">
           <img className="brand-mark" src="/bup-logo.png" alt="BUP" />

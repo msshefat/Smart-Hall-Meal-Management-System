@@ -103,8 +103,8 @@ export default function Shell() {
 export function DebtNotice({ user }) {
   if (!user || user.role !== 'student' || !user.inDebt) return null
   const text = user.orderingBlocked
-    ? `Your balance is ${user.balanceLabel}. New meals are closed once it goes past −TK 500. You can still turn a meal off, and the hall office can add money.`
-    : `Your balance is ${user.balanceLabel}. You can still order meals until it goes past −TK 500.`
+    ? `Your balance is ${user.balanceLabel}. New meals are closed once it goes past −৳500. You can still turn a meal off, and the hall office can add money.`
+    : `Your balance is ${user.balanceLabel}. You can still order meals until it goes past −৳500.`
   return <p className="callout" role="status">{text}</p>
 }
 

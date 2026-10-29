@@ -110,8 +110,8 @@ function AdminHome({ data, name }) {
           </ul>
         </article>
         <article className="panel">
-          <div className="section-title"><h2>Balances under TK 300</h2><Link to="/app/balances">All balances</Link></div>
-          {!data.low.length ? <p className="empty">No active student is under TK 300.</p> : null}
+          <div className="section-title"><h2>Balances under ৳300</h2><Link to="/app/balances">All balances</Link></div>
+          {!data.low.length ? <p className="empty">No active student is under ৳300.</p> : null}
           <ul className="people-list">
             {data.low.map((person) => (
               <li key={person.fullName}><span>{person.fullName}<small>{person.roomNo}</small></span><strong className={person.due ? 'is-due-text' : ''}>{person.balanceLabel}</strong></li>

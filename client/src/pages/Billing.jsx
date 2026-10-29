@@ -43,7 +43,7 @@ export default function Billing() {
         <form className="panel form-grid narrow" onSubmit={requestMoney}>
           <h2>Add money</h2>
           <div className="pair">
-            <label>Amount (TK ) <Star /><input className="form-control" inputMode="decimal" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} required /></label>
+            <label>Amount (৳) <Star /><input className="form-control" inputMode="decimal" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} required /></label>
             <label>Note<input className="form-control" value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder="bKash, cash at the office" /></label>
           </div>
           <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? 'Sending…' : 'Send request'}</button>
@@ -70,7 +70,7 @@ export default function Billing() {
         <article className={`stat ${data.due ? 'is-due' : ''}`}>
           <p className="stat-label">{data.due ? 'Amount due' : 'Balance'}</p>
           <p className="stat-value">{data.balanceLabel}</p>
-          <p className="stat-hint">{data.due ? 'Amount due. New meals close past −TK 500.' : 'Updated when a meal rate is posted'}</p>
+          <p className="stat-hint">{data.due ? 'Amount due. New meals close past −৳500.' : 'Updated when a meal rate is posted'}</p>
         </article>
         <article className="stat">
           <p className="stat-label">{data.monthLabel}</p>

@@ -53,7 +53,7 @@ export default function Costs() {
           <article className="panel" key={meal.key}>
             <h2>{meal.label}</h2>
             <p className="stat-hint">{meal.count} students on</p>
-            <label>Amount (TK ) <Star />
+            <label>Amount (৳) <Star />
               <input className="form-control" inputMode="decimal" value={drafts[meal.key]?.amount || ''} onChange={(event) => setDrafts((current) => ({ ...current, [meal.key]: { ...current[meal.key], amount: event.target.value } }))} />
             </label>
             <label>Note
