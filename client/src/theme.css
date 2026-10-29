@@ -264,6 +264,12 @@ code {
 .auth-aside p { color: rgba(244, 241, 234, 0.84); max-width: 28rem; }
 .aside-note { font-size: 0.95rem; }
 .auth-panel { display: grid; align-content: center; gap: 1rem; padding: 2rem 8vw; }
+.login-panel {
+  background:
+    linear-gradient(180deg, rgba(28, 22, 16, 0.12), rgba(28, 22, 16, 0.2)),
+    url('/login-hall.jpg') center 42% / cover no-repeat;
+}
+.login-panel .auth-card { box-shadow: 0 16px 40px rgba(22, 18, 12, 0.22); }
 .auth-card, .demo-accounts, .solo-card, .panel {
   background: var(--paper);
   border: 1px solid var(--line);

@@ -115,7 +115,7 @@ export function Login() {
         </div>
         <p className="aside-note">Lock times, deposits, and meal rates are kept in MongoDB.</p>
       </section>
-      <section className="auth-panel">
+      <section className="auth-panel login-panel">
         <form className="auth-card" onSubmit={onSubmit}>
           <h2>Welcome back</h2>
           {params.get('requested') ? <p className="banner is-ok">Request received. You can sign in after the hall office approves the account.</p> : null}
@@ -129,15 +129,6 @@ export function Login() {
           <button className="btn btn-primary btn-lg" type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
           <p className="auth-switch">New student? <Link to="/signup">Request an account</Link>. The hall office turns it on after checking the details.</p>
         </form>
-        <aside className="demo-accounts">
-          <p className="eyebrow">Demonstration accounts</p>
-          <ul>
-            <li><span>Administrator</span><code>admin@buphall.edu</code><code>Admin@123</code></li>
-            <li><span>Mess staff</span><code>staff@buphall.edu</code><code>Staff@123</code></li>
-            <li><span>Student</span><code>ayesha@buphall.edu</code><code>Student@123</code></li>
-          </ul>
-          <p>Other seeded students use <code>Student@123</code>.</p>
-        </aside>
       </section>
     </div>
   )
