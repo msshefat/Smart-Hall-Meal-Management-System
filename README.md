@@ -56,14 +56,3 @@ The other seeded students use `Student@123`. Mehedi Hasan is inactive and cannot
 Each of those students is charged that rate. Paisa that does not divide evenly is stored as undistributed and shown on the report. Saving a cost, or correcting the meal sheet after a cost exists, recalculates that meal and rewrites the charges.
 
 A negative balance is an amount due. There is no online payment gateway in this version.
-
-
-## Password reset email setup
-
-The Forgot Password flow sends a one-time reset link through the Resend email API. Configure these environment variables in Render (or your local server environment):
-
-- `RESEND_API_KEY`: API key from your Resend account.
-- `EMAIL_FROM`: sender address verified in Resend, for example `HallMeal <no-reply@yourdomain.com>`.
-- `APP_BASE_URL`: public website origin, for example `https://your-service.onrender.com` (do not add a trailing slash).
-
-The reset token is stored only as a SHA-256 hash, expires after 15 minutes, and is invalidated after a successful password change. Resend requires a verified sending domain for production delivery. For initial testing, Resend's test sender may only deliver to the email address associated with your Resend account.

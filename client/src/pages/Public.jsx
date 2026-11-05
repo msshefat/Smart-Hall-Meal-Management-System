@@ -90,6 +90,7 @@ export function Login() {
   const [forgotStudentCode, setForgotStudentCode] = useState('')
   const [forgotMessage, setForgotMessage] = useState('')
   const [forgotError, setForgotError] = useState('')
+  const [resetUrl, setResetUrl] = useState('')
   const [forgotBusy, setForgotBusy] = useState(false)
 
   async function requestReset(event) {
@@ -97,10 +98,16 @@ export function Login() {
     setForgotBusy(true)
     setForgotError('')
     setForgotMessage('')
+    setResetUrl('')
+    const resetTab = window.open('about:blank', '_blank')
     try {
       const result = await api.post('/api/forgot-password', { email: forgotEmail, studentCode: forgotStudentCode })
-      setForgotMessage(result.message || 'A password reset link has been sent to your registered email address.')
+      const instructionUrl = `${window.location.origin}/reset-link?token=${encodeURIComponent(result.token)}`
+      setResetUrl(instructionUrl)
+      setForgotMessage('Temporary reset link generated. It expires in 15 minutes and can be used only once.')
+      if (resetTab) resetTab.location.href = instructionUrl
     } catch (err) {
+      if (resetTab) resetTab.close()
       setForgotError(err.message)
     } finally {
       setForgotBusy(false)
@@ -163,7 +170,9 @@ export function Login() {
               <label>Student ID
                 <input className="form-control" type="text" value={forgotStudentCode} onChange={(event) => setForgotStudentCode(event.target.value)} required />
               </label>
-              <button className="btn btn-accent" type="button" disabled={forgotBusy || !forgotEmail.trim() || !forgotStudentCode.trim()} onClick={() => requestReset({ preventDefault() {} })}>{forgotBusy ? 'Sending email…' : 'Verify & send reset link'}</button>
+              <button className="btn btn-accent" type="button" disabled={forgotBusy || !forgotEmail.trim() || !forgotStudentCode.trim()} onClick={() => requestReset({ preventDefault() {} })}>{forgotBusy ? 'Generating link…' : 'Verify & generate link'}</button>
+              {resetUrl ? <p className="reset-link-fallback">If a new tab did not open, <a href={resetUrl} target="_blank" rel="noreferrer">open the reset link here</a>.</p> : null}
+              <p className="server-notice">Mail Server is not configured yet. For development, the reset link is displayed/opened in a new tab instead of being sent by email.</p>
             </div>
           ) : null}
           <p className="auth-switch">New student? <Link to="/signup">Request an account</Link>. The hall office turns it on after checking the details.</p>
