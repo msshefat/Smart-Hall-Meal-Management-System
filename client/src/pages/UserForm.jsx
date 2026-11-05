@@ -52,7 +52,7 @@ export default function UserForm() {
 
   return (
     <>
-      <PageHead eyebrow="Directory" title={editing ? 'Edit person' : 'Add person'} lede={editing ? 'Leave the password blank to keep the current one. ID and mobile stay required.' : 'Every person needs an ID and a mobile number. Share the password. They can change it after signing in.'} />
+      <PageHead eyebrow="Directory" title={editing ? 'Edit person' : 'Add person'} lede={editing ? 'Update account details here. Password changes are handled by the account holder. ID and mobile stay required.' : 'Every person needs an ID and a mobile number. Share the password. They can change it after signing in.'} />
       <form className="panel form-grid narrow" onSubmit={save}>
         <Banner message={error} kind="error" />
         {editing && form.id ? (
@@ -93,9 +93,13 @@ export default function UserForm() {
             <option value="inactive">Inactive</option>
           </select>
         </label>
-        <label>{editing ? 'New password (optional)' : <>Password <Star /></>}
-          <input className="form-control" type="text" value={form.password} onChange={set('password')} minLength={editing ? undefined : 6} required={!editing} autoComplete="new-password" />
-        </label>
+        {!editing ? (
+          <label>Password <Star />
+            <input className="form-control" type="password" value={form.password} onChange={set('password')} minLength={6} required autoComplete="new-password" />
+          </label>
+        ) : (
+          <p className="stat-hint">Password changes are managed by the account holder from their own Profile settings.</p>
+        )}
         {!editing ? <label>Opening balance for a student (৳)<input className="form-control" type="number" min="0" step="0.01" value={form.balance} onChange={set('balance')} /></label> : null}
         <div className="page-actions">
           <button className="btn btn-primary" type="submit">{editing ? 'Save changes' : 'Create account'}</button>

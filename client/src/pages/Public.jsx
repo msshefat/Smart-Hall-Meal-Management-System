@@ -85,6 +85,34 @@ export function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [forgotOpen, setForgotOpen] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotStudentCode, setForgotStudentCode] = useState('')
+  const [forgotMessage, setForgotMessage] = useState('')
+  const [forgotError, setForgotError] = useState('')
+  const [resetUrl, setResetUrl] = useState('')
+  const [forgotBusy, setForgotBusy] = useState(false)
+
+  async function requestReset(event) {
+    event.preventDefault()
+    setForgotBusy(true)
+    setForgotError('')
+    setForgotMessage('')
+    setResetUrl('')
+    const resetTab = window.open('about:blank', '_blank')
+    try {
+      const result = await api.post('/api/forgot-password', { email: forgotEmail, studentCode: forgotStudentCode })
+      const instructionUrl = `${window.location.origin}/reset-link?token=${encodeURIComponent(result.token)}`
+      setResetUrl(instructionUrl)
+      setForgotMessage('Temporary reset link generated. It expires in 15 minutes and can be used only once.')
+      if (resetTab) resetTab.location.href = instructionUrl
+    } catch (err) {
+      if (resetTab) resetTab.close()
+      setForgotError(err.message)
+    } finally {
+      setForgotBusy(false)
+    }
+  }
 
   async function onSubmit(event) {
     event.preventDefault()
@@ -127,7 +155,125 @@ export function Login() {
             <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required />
           </label>
           <button className="btn btn-primary btn-lg" type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+          <button className="forgot-link" type="button" onClick={() => { setForgotOpen((value) => !value); setForgotError(''); setForgotMessage(''); }}>
+            Forgot Password?
+          </button>
+          {forgotOpen ? (
+            <div className="forgot-panel">
+              <h3>Reset your password</h3>
+              <p>Enter the email address and Student ID registered with the same HallMeal account.</p>
+              {forgotError ? <p className="banner is-bad">{forgotError}</p> : null}
+              {forgotMessage ? <p className="banner is-ok">{forgotMessage}</p> : null}
+              <label>Registered email
+                <input className="form-control" type="email" value={forgotEmail} onChange={(event) => setForgotEmail(event.target.value)} required />
+              </label>
+              <label>Student ID
+                <input className="form-control" type="text" value={forgotStudentCode} onChange={(event) => setForgotStudentCode(event.target.value)} required />
+              </label>
+              <button className="btn btn-accent" type="button" disabled={forgotBusy || !forgotEmail.trim() || !forgotStudentCode.trim()} onClick={() => requestReset({ preventDefault() {} })}>{forgotBusy ? 'Generating link…' : 'Verify & generate link'}</button>
+              {resetUrl ? <p className="reset-link-fallback">If a new tab did not open, <a href={resetUrl} target="_blank" rel="noreferrer">open the reset link here</a>.</p> : null}
+              <p className="server-notice">Mail Server is not configured yet. For development, the reset link is displayed/opened in a new tab instead of being sent by email.</p>
+            </div>
+          ) : null}
           <p className="auth-switch">New student? <Link to="/signup">Request an account</Link>. The hall office turns it on after checking the details.</p>
+        </form>
+      </section>
+    </div>
+  )
+}
+
+export function ResetLinkPage() {
+  const [params] = useSearchParams()
+  const token = params.get('token') || ''
+  const resetUrl = `${window.location.origin}/reset-password?token=${encodeURIComponent(token)}`
+
+  return (
+    <div className="auth-shell" id="content">
+      <section className="auth-aside">
+        <Link className="brand brand-on-dark" to="/">
+          <img className="brand-mark" src="/bup-logo.png" alt="BUP" />
+          <span><strong>HallMeal</strong><small>Password recovery</small></span>
+        </Link>
+        <div>
+          <p className="eyebrow eyebrow-light">Temporary reset link</p>
+          <h1>Your account has been verified.</h1>
+          <p>Use the link on this page to open the password reset form in another tab.</p>
+        </div>
+        <p className="aside-note">The link expires in 15 minutes and can be used only once.</p>
+      </section>
+      <section className="auth-panel">
+        <div className="auth-card">
+          <h2>Password reset link</h2>
+          <p className="banner is-ok">Email and Student ID verification successful.</p>
+          <p className="server-notice">Mail Server is not configured. Therefore, the temporary reset link is displayed here instead of being sent by email.</p>
+          {token ? (
+            <p className="reset-link-fallback">
+              <a className="btn btn-primary btn-lg" href={resetUrl} target="_blank" rel="noreferrer">Open Reset Password in New Tab</a>
+            </p>
+          ) : (
+            <p className="banner is-bad">No reset token was found. Please request a new link from the login page.</p>
+          )}
+          <p className="auth-switch"><Link to="/login">Back to sign in</Link></p>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+export function ResetPassword() {
+  const [params] = useSearchParams()
+  const navigate = useNavigate()
+  const token = params.get('token') || ''
+  const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  async function onSubmit(event) {
+    event.preventDefault()
+    setBusy(true)
+    setError('')
+    setMessage('')
+    try {
+      const result = await api.post('/api/reset-password', { token, password, confirm })
+      setMessage(result.message)
+      setTimeout(() => navigate('/login'), 1400)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="auth-shell" id="content">
+      <section className="auth-aside">
+        <Link className="brand brand-on-dark" to="/">
+          <img className="brand-mark" src="/bup-logo.png" alt="BUP" />
+          <span><strong>HallMeal</strong><small>Password recovery</small></span>
+        </Link>
+        <div>
+          <p className="eyebrow eyebrow-light">Account security</p>
+          <h1>Choose a new password.</h1>
+          <p>This temporary link is valid for 15 minutes and can be used only once.</p>
+        </div>
+        <p className="aside-note">Your new password will be securely hashed before it is saved.</p>
+      </section>
+      <section className="auth-panel">
+        <form className="auth-card" onSubmit={onSubmit}>
+          <h2>Reset password</h2>
+          {error ? <p className="banner is-bad">{error}</p> : null}
+          {message ? <p className="banner is-ok">{message}</p> : null}
+          {!token ? <p className="banner is-bad">No reset token was found. Request a new reset link from the login page.</p> : null}
+          <label>New password
+            <input className="form-control" type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} autoComplete="new-password" required />
+          </label>
+          <label>Confirm new password
+            <input className="form-control" type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} minLength={6} autoComplete="new-password" required />
+          </label>
+          <button className="btn btn-primary btn-lg" type="submit" disabled={busy || !token}>{busy ? 'Updating…' : 'Update password'}</button>
+          <p className="auth-switch"><Link to="/login">Back to sign in</Link></p>
         </form>
       </section>
     </div>

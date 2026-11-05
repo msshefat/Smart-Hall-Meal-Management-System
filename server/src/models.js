@@ -11,7 +11,9 @@ const userSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive', 'pending'], default: 'active' },
   balancePaisa: { type: Number, default: 0 },
   hasPhoto: { type: Boolean, default: false },
-  hasIdCard: { type: Boolean, default: false }
+  hasIdCard: { type: Boolean, default: false },
+  passwordResetTokenHash: { type: String, default: null },
+  passwordResetExpiresAt: { type: Date, default: null }
 }, { timestamps: true });
 
 const userImageSchema = new mongoose.Schema({

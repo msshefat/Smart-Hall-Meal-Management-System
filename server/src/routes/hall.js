@@ -779,7 +779,6 @@ router.put('/users/:id', requireRole('admin'), asyncRoute(async (req, res) => {
   existing.roomNo = form.roomNo;
   existing.phone = form.phone;
   existing.status = form.status;
-  if (form.password) existing.passwordHash = await bcrypt.hash(form.password, 10);
   await existing.save();
   await logActivity(req.user._id, 'Updated user', form.fullName);
   res.json({ message: `${form.fullName} was updated.` });

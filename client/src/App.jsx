@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { api } from './api'
 import Shell from './Shell'
-import { Landing, Login, Signup } from './pages/Public'
+import { Landing, Login, ResetLinkPage, ResetPassword, Signup } from './pages/Public'
 import Home from './pages/Home'
 import Orders from './pages/Orders'
 import MenuPage from './pages/MenuPage'
@@ -60,6 +60,8 @@ export default function App() {
         <Route path="/" element={<Guest><Landing /></Guest>} />
         <Route path="/login" element={<Guest><Login /></Guest>} />
         <Route path="/signup" element={<Guest><Signup /></Guest>} />
+        <Route path="/reset-link" element={<Guest><ResetLinkPage /></Guest>} />
+        <Route path="/reset-password" element={<Guest><ResetPassword /></Guest>} />
         <Route path="/app" element={<Shell />}>
           <Route index element={<Home />} />
           <Route path="orders" element={<Orders />} />

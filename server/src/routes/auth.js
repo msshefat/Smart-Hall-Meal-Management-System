@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const { User, UserImage, MoneyRequest } = require('../models');
 const { getSettings } = require('../db');
 const { logActivity } = require('../billing');
@@ -74,6 +75,66 @@ router.post('/login', asyncRoute(async (req, res) => {
   await logActivity(user._id, 'Signed in', user.role);
   req.user = user;
   res.json(await sessionPayload(req));
+}));
+
+// Temporary password reset flow. The raw token is shown in the browser because
+// this development build does not send email. Only its SHA-256 hash is stored.
+router.post('/forgot-password', asyncRoute(async (req, res) => {
+  const email = clean(req.body.email, 160).toLowerCase();
+  const studentCode = clean(req.body.studentCode, 40);
+  if (!isEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
+  if (studentCode.length < 2) return res.status(400).json({ message: 'Enter your registered Student ID.' });
+
+  // Both values must belong to the same account.
+  const user = await User.findOne({
+    email,
+    studentCode: { $regex: `^${escapeRegex(studentCode)}$`, $options: 'i' }
+  });
+  if (!user) {
+    return res.status(404).json({ message: 'The email address and Student ID do not match an existing account.' });
+  }
+
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  user.passwordResetTokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+  user.passwordResetExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+  await user.save();
+
+  res.json({
+    message: 'A temporary password reset link has been generated.',
+    token: rawToken,
+    expiresInMinutes: 15
+  });
+}));
+
+router.post('/reset-password', asyncRoute(async (req, res) => {
+  const token = String(req.body.token || '');
+  const password = String(req.body.password || '');
+  const confirm = String(req.body.confirm || '');
+  if (!/^[a-f0-9]{64}$/i.test(token)) {
+    return res.status(400).json({ message: 'This reset link is invalid. Request a new one.' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Choose a password of at least 6 characters.' });
+  }
+  if (password !== confirm) {
+    return res.status(400).json({ message: 'The two passwords do not match.' });
+  }
+
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const user = await User.findOne({
+    passwordResetTokenHash: tokenHash,
+    passwordResetExpiresAt: { $gt: new Date() }
+  });
+  if (!user) {
+    return res.status(400).json({ message: 'This reset link is invalid, expired, or already used. Please request a new link.' });
+  }
+
+  user.passwordHash = await bcrypt.hash(password, 10);
+  user.passwordResetTokenHash = null;
+  user.passwordResetExpiresAt = null;
+  await user.save();
+  await logActivity(user._id, 'Reset password', 'Password changed using a temporary reset link');
+  res.json({ message: 'Your password has been updated. You can now sign in with your new password.' });
 }));
 
 router.post('/logout', (req, res) => {

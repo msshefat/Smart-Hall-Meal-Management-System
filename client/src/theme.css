@@ -828,3 +828,37 @@ blockquote {
 .form-grid { display: grid; gap: 0.85rem; }
 .public-wait { padding: 2rem; }
 textarea.form-control { min-height: 6rem; resize: vertical; }
+
+/* Temporary password recovery */
+.forgot-link {
+  display: block;
+  margin: 0.65rem 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--forest);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.forgot-link:hover, .reset-link-fallback a { text-decoration: underline; }
+.forgot-panel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+.forgot-panel h3 { margin: 0 0 0.35rem; }
+.forgot-panel > p { color: var(--ink-soft); font-size: 0.88rem; }
+.forgot-panel .banner { margin-top: 0.75rem; }
+.server-notice {
+  margin: 0.9rem 0 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--brass);
+  background: #fff8e8;
+  color: #5c4a28 !important;
+  line-height: 1.5;
+}
+.reset-link-fallback { margin-top: 0.8rem !important; overflow-wrap: anywhere; }
