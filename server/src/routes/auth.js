@@ -77,13 +77,15 @@ router.post('/login', asyncRoute(async (req, res) => {
   res.json(await sessionPayload(req));
 }));
 
-// Temporary password reset flow. The raw token is shown in the browser because
-// this development build does not send email. Only its SHA-256 hash is stored.
+// Password reset flow: only the token hash is stored; the raw token is emailed once.
 router.post('/forgot-password', asyncRoute(async (req, res) => {
   const email = clean(req.body.email, 160).toLowerCase();
   const studentCode = clean(req.body.studentCode, 40);
   if (!isEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
   if (studentCode.length < 2) return res.status(400).json({ message: 'Enter your registered Student ID.' });
+  if (!process.env.RESEND_API_KEY || !process.env.EMAIL_FROM) {
+    return res.status(503).json({ message: 'Password reset email is not configured yet. Please contact the hall office.' });
+  }
 
   // Both values must belong to the same account.
   const user = await User.findOne({
@@ -99,9 +101,38 @@ router.post('/forgot-password', asyncRoute(async (req, res) => {
   user.passwordResetExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
   await user.save();
 
+  const baseUrl = (process.env.APP_BASE_URL || '').replace(/\/$/, '');
+  if (!baseUrl) {
+    user.passwordResetTokenHash = null;
+    user.passwordResetExpiresAt = null;
+    await user.save();
+    return res.status(503).json({ message: 'Password reset website URL is not configured. Please contact the hall office.' });
+  }
+  const resetUrl = `${baseUrl}/reset-password?token=${encodeURIComponent(rawToken)}`;
+  const emailResponse = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: process.env.EMAIL_FROM,
+      to: [user.email],
+      subject: 'Reset your HallMeal password',
+      html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;line-height:1.6;color:#202b35"><h2>Reset your HallMeal password</h2><p>We received a request to reset the password for your HallMeal account.</p><p><a href="${resetUrl}" style="display:inline-block;padding:12px 20px;background:#176b5b;color:#fff;text-decoration:none;border-radius:6px">Reset Password</a></p><p>This link expires in 15 minutes and can be used only once.</p><p>If you did not request this change, you can ignore this email.</p></div>`
+    })
+  });
+  if (!emailResponse.ok) {
+    const details = await emailResponse.text();
+    console.error('Password reset email failed:', details);
+    user.passwordResetTokenHash = null;
+    user.passwordResetExpiresAt = null;
+    await user.save();
+    return res.status(502).json({ message: 'Could not send the reset email. Please try again later or contact the hall office.' });
+  }
+
   res.json({
-    message: 'A temporary password reset link has been generated.',
-    token: rawToken,
+    message: 'A password reset link has been sent to your registered email address.',
     expiresInMinutes: 15
   });
 }));
